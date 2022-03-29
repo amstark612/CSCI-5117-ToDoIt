@@ -18,6 +18,9 @@ onBeforeMount(() => {
     console.log('hello from parent')
     category.value = route.params.category
     console.log('from parent ' + category.value)
+    if (!category.value) {
+        category.value = ''
+    }
 })
 </script>
 

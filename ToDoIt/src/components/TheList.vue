@@ -35,7 +35,7 @@ console.log('from child ' + props.category)
     <TheTopBar />
 
     <!-- CTN-TODO: titleize -->
-    <header>{{ props.category.length ? props.category : 'Todos' }}</header>
+    <header>{{ props.category.length ? props.category : '' }} Todos</header>
 
     <!-- CTN-TODO: if no todos, show a cute message -->
 
@@ -68,7 +68,7 @@ console.log('from child ' + props.category)
         :text="todo.text"
         :content="todo.content"
         :done="todo.done"
-        @status="setStatus(todo.id)"
+        @status="todo.done = !todo.done"
     />
 
     <div class="field">
