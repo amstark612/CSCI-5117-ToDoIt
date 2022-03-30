@@ -40,7 +40,7 @@ export default {
 </script>
 
 <template>
-  <main>
+  <main class="full-height">
     <TheList v-if="todos" :category="category" :todos="todos" />
   </main>
 </template>

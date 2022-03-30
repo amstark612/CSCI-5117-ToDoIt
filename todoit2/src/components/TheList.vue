@@ -1,10 +1,11 @@
 <script>
+import $ from "jquery";
 import ListItem from "@/components/ListItem.vue";
 import TheTopBar from "@/components/TheTopBar.vue";
 
 export default {
   name: "TheList",
-  data: function() {
+  data() {
     return {
       newTodo: null,
       hideCompleted: false,
@@ -33,6 +34,7 @@ export default {
         // this.todos.unshift({
         //   id: 1111,
         //   title: this.newTodo,
+        //   category: this.category || ''
         //   content: "",
         //   done: false,
         // });
@@ -43,6 +45,18 @@ export default {
     },
   },
 };
+
+function adjustWidth() {
+  let parentwidth = $("#todo-list").width();
+  $(".new-todo").width(parentwidth);
+}
+
+// CTN-TODO this is hacky and does not fire when user presses 'back'
+$(window).on('load', adjustWidth);
+$(window).resize(
+  function() {
+    adjustWidth();
+});
 </script>
 
 <template>
@@ -58,7 +72,7 @@ export default {
       @status="todo.done = !todo.done"
     />
 
-    <button class="button" @click="hideCompleted = !hideCompleted">
+    <button class="button mt-2 mb-2 p-5" @click="hideCompleted = !hideCompleted">
       <span class="icon">
         <i 
           :class="hideCompleted
@@ -78,8 +92,8 @@ export default {
       @status="todo.done = !todo.done"
     />
 
-    <div class="field top-pad">
-      <div class="control has-icons-left">
+    <div class="field top-pad pb-5 fixed">
+      <div class="control has-icons-left bottom-pad">
         <input
           class="input"
           placeholder="Add a new todo"
@@ -99,8 +113,8 @@ export default {
 
 .button
   height: 1.75em
-  padding: 1em
   font-size: 0.75em
-  margin-top: 0.5em
-  margin-bottom: 0.5em
+
+.new-todo
+  bottom: 1.5em
 </style>

@@ -4,8 +4,10 @@ export default {
   data: function() {
     return {
       showOptions: false,
+      categories: Array,
     }
   },
+
   methods: {
     back() {
       this.$router.go(-1);
@@ -13,6 +15,10 @@ export default {
     toggleOptions() {
       this.showOptions = !this.showOptions;
     },
+  },
+
+  mounted() {
+    console.log('fetch categories for menu...');
   },
 };
 </script>
@@ -39,11 +45,11 @@ export default {
       <div class="modal-background"></div>
       <div class="modal-content">
         <div class="box center container">
-          <div class="columns">
-            <div class="column"></div>
-            <div class="column"><strong>Categories</strong></div>
-            <div class="column right"><a class="muted" @click="toggleOptions">Done</a></div>
+          <div class="right">
+            <a class="muted" @click="toggleOptions"><small class="upper">Done</small></a>
           </div>
+          <div class="pb-2 heading"><strong class="primary">Categories</strong></div>
+
           <div class="box left">
             Category links go here
           </div>
@@ -59,6 +65,7 @@ export default {
 nav
   display: flex
   justify-content: space-between
+  text-transform: uppercase
 
 .nav-link, .nav-link:hover
   color: $light-olive
@@ -71,4 +78,7 @@ nav
 .container
     border-bottom-left-radius: 0px
     border-bottom-right-radius: 0px
+
+.heading
+  font-size: 1em
 </style>

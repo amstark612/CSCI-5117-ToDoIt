@@ -1,45 +1,59 @@
 @import "./_variables.sass"
 
 .hidden
-    display: hidden !important
+  display: hidden !important
 
 /***** Alignment/Padding/Margin utilities *****/
 .left
-    text-align: left
+  text-align: left
 
 .center
-    text-align: center
+  text-align: center
 
 .right
-    text-align: right
+  text-align: right
 
 .top-pad
-    padding-top: 5px
+  padding-top: 5px
 
 .right-pad
-    padding-right: 5px
+  padding-right: 5px
 
 .bottom-pad
-    padding-bottom: 5px
+  padding-bottom: 5px
 
 .left-pad
-    padding-left: 5px
+  padding-left: 5px
 
 .full-width
-    width: 100%
+  width: 100%
 
-/***** Text utilities *****/
+.full-height
+  height: 100vh
+
+/***** Positioning *****/
+.fixed
+  position: fixed
+
+/***** Text color *****/
+.primary
+  color: $primary
+
 .selected 
-    color: $active
+  color: $active
 
 .muted
-    color: $muted
+  color: $muted
 
 .alert
-    color: $danger
+  color: $danger
 
 .warning
-    color: $warning
+  color: $warning
 
 .success
-    color: $success
+  color: $success
+
+/***** Text transform *****/
+.upper
+  text-transform: uppercase

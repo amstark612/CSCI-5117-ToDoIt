@@ -9,7 +9,7 @@ export default {
 </script>
 
 <template>
-  <div class="box todo">
+  <div class="box mb-3">
     <span
       class="icon-text todo-contents"
       :class="this.todo.done ? 'muted' : ''"
@@ -22,17 +22,13 @@ export default {
         <span>{{ this.todo.title }}</span>
       </RouterLink>
 
-      <span class="caption">{{ this.todo.content }}</span>
+      <span class="caption left-pad">{{ this.todo.content }}</span>
     </span>
   </div>
 </template>
 
 <style lang="sass" scoped>
 @import "@/assets/styles/global.sass"
-@import "@/assets/styles/utilities.sass"
-
-.todo
-  margin-bottom: 0.75em !important
 
 .todo-contents
   display: -webkit-box 
@@ -42,8 +38,6 @@ export default {
   // color: $dark-olive
 
 .caption
-  flex: 1 1 auto
-  padding-left: 5px
   color: $dark-olive
   font-style: italic
 
