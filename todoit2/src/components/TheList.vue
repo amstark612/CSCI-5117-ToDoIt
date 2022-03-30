@@ -46,16 +46,20 @@ export default {
   },
 };
 
-function adjustWidth() {
-  let parentwidth = $("#todo-list").width();
-  $(".new-todo").width(parentwidth);
+let adjustWidth = () => {
+  // CTN-TODO: maybe this needs to happen AFTER popstate has been detected and things have loaded
+  console.log('adjusting');
+  let parentWidth = $("#todo-list").width();
+  console.log(parentWidth);
+  $(".new-todo").width(parentWidth);
 }
 
 // CTN-TODO this is hacky and does not fire when user presses 'back'
+// CTN-TODO investigate 'popstate' https://developer.mozilla.org/en-US/docs/Web/API/Window/popstate_event
 $(window).on('load', adjustWidth);
-$(window).resize(
-  function() {
-    adjustWidth();
+$(window).on('popstate', adjustWidth);
+$(window).resize(() => {
+  adjustWidth();
 });
 </script>
 
@@ -72,7 +76,7 @@ $(window).resize(
       @status="todo.done = !todo.done"
     />
 
-    <button class="button mt-2 mb-2 p-5" @click="hideCompleted = !hideCompleted">
+    <button class="button is-small mt-1 mb-2" @click="hideCompleted = !hideCompleted">
       <span class="icon">
         <i 
           :class="hideCompleted
@@ -92,7 +96,7 @@ $(window).resize(
       @status="todo.done = !todo.done"
     />
 
-    <div class="field top-pad pb-5 fixed">
+    <div class="field top-pad pb-5 fixed new-todo">
       <div class="control has-icons-left bottom-pad">
         <input
           class="input"
@@ -114,7 +118,8 @@ $(window).resize(
 .button
   height: 1.75em
   font-size: 0.75em
+  border-radius: 3px !important
 
 .new-todo
-  bottom: 1.5em
+  bottom: 0em
 </style>

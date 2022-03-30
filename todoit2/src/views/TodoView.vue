@@ -14,8 +14,9 @@ export default {
 
   mounted() {
     let id = this.$route.params.id;
-    if (id) {
+    if (id != null) {
       console.log("fetching todo with id " + id + " ...");
+      // CTN-TODO: why tf does the browser thing todo is a prop instead of a data attribute
       this.todo = {
         id: 1,
         title: "A todo",

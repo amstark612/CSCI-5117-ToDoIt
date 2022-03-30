@@ -1,25 +1,29 @@
 <script>
+import BaseCategoryList from "./BaseCategoryList.vue";
+
 export default {
-  name: "TheTopBar",
-  data: function() {
-    return {
-      showOptions: false,
-      categories: Array,
-    }
-  },
-
-  methods: {
-    back() {
-      this.$router.go(-1);
+    name: "TheTopBar",
+    data: function () {
+        return {
+            showOptions: false,
+            categories: Array,
+        };
     },
-    toggleOptions() {
-      this.showOptions = !this.showOptions;
+    components: {
+      BaseCategoryList,
     },
-  },
 
-  mounted() {
-    console.log('fetch categories for menu...');
-  },
+    methods: {
+        back() {
+            this.$router.go(-1);
+        },
+        toggleOptions() {
+            this.showOptions = !this.showOptions;
+        },
+    },
+    mounted() {
+        console.log("fetch categories for menu...");
+    },
 };
 </script>
 
@@ -50,9 +54,12 @@ export default {
           </div>
           <div class="pb-2 heading"><strong class="primary">Categories</strong></div>
 
+          <BaseCategoryList @category="goToCategory" />
+          <!--
           <div class="box left">
             Category links go here
           </div>
+          -->
         </div>
       </div>
     </div>
