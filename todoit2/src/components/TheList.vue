@@ -20,6 +20,9 @@ export default {
     TheTopBar,
   },
 
+  mounted() {
+    adjustInputWidth();
+  },
   computed: {
     openTodos() {
       return this.todos.filter((todo) => !todo.done);
@@ -46,20 +49,15 @@ export default {
   },
 };
 
-let adjustWidth = () => {
-  // CTN-TODO: maybe this needs to happen AFTER popstate has been detected and things have loaded
-  console.log('adjusting');
+// new-todo input has fixed positioning
+// thus needs to be manually sized to fit width of parent container
+let adjustInputWidth = () => {
   let parentWidth = $("#todo-list").width();
-  console.log(parentWidth);
   $(".new-todo").width(parentWidth);
 }
 
-// CTN-TODO this is hacky and does not fire when user presses 'back'
-// CTN-TODO investigate 'popstate' https://developer.mozilla.org/en-US/docs/Web/API/Window/popstate_event
-$(window).on('load', adjustWidth);
-$(window).on('popstate', adjustWidth);
 $(window).resize(() => {
-  adjustWidth();
+  adjustInputWidth();
 });
 </script>
 
