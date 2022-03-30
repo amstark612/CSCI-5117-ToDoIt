@@ -29,8 +29,10 @@ let completedTodos = computed(() => {
 </template>
 
 <style scoped lang="scss">
+// @import '@/assets/stylesheets/_variables.sass';
 .box {
     margin-bottom: 0.75em !important;
+    color: $dark-olive;
 }
 
 .icon {

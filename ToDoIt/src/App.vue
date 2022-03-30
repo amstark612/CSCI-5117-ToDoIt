@@ -24,18 +24,6 @@ $muted: $light-olive;
   border-bottom-right-radius: 10px;
 }
 
-nav {
-  display: flex;
-  justify-content: space-between; 
-  height: 25px;
-}
-
-header {
-  height: 50px;
-  font-size: 2em;
-}
-
-
 /* @import "@/assets/base.css";
 
 #app {

@@ -4,28 +4,4 @@
 @import url('https://fonts.googleapis.com/css?family=Nunito:400,700');
 @import "./_variables.sass";
 
-// colors
-// $light-olive: #606C38;
-// $dark-olive: #283618;
-// $cream: #FEFAE0;
-// $light-camel: #DDA15E;
-// $dark-camel: #BC6C25;
-// 
-// $muted: $light-olive;
-// 
-// // Update Bulma's global variables
-// $family-sans-serif: "Nunito", sans-serif;
-// $grey-dark: $dark-camel;
-// $grey-light: $light-olive;
-// $primary: $light-camel;
-// $link: $cream;
-// $widescreen-enabled: false;
-// $fullhd-enabled: false;
-// 
-// // Update some of Bulma's component variables
-// $body-background-color: $dark-olive;
-// $control-border-width: 2px;
-// $input-border-color: transparent;
-// $input-shadow: none;
-
-@import '../../../node_modules/bulma/bulma.sass'
+@import '../../../node_modules/bulma/bulma.sass';
