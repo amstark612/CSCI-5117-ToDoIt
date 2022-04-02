@@ -4,13 +4,28 @@ export default {
   name: "TheTodo",
   data() {
     return {
+      todo: null,
       editMode: false,
     }
   },
   props: {
-    todo: Object,
+    id: Number,
   },
 
+  mounted() {
+    if (this.id != null) {
+      console.log("fetching todo with id " + this.id + " ...");
+      this.todo = {
+        id: 1,
+        title: "A todo",
+        category: "Shopping",
+        content: "Todo notes",
+        done: false,
+      };
+    } else {
+      console.log('redirect or go to 404 here...');
+    }
+  },
   methods: {
     toggleCategoryModal() {
       console.log('toggleCategorymodal stub from TheTodo.vue');
@@ -23,18 +38,17 @@ export default {
 </script>
 
 <template>
-  <div id="todo">
+  <div id="todo" v-if="todo">
     <header class="pt-2">
       <span
         class="icon-text"
-        :class="this.todo.done ? 'muted' : ''"
+        :class="todo.done ? 'muted' : ''"
       >
-        <!-- CTN-TODO: should we save the todo from here or from the parent? -->
-        <span class="icon clickable" @click="$emit('status')">
-          <i :class="this.todo.done ? 'far fa-check-circle' : 'far fa-circle'" />
+        <span class="icon clickable" @click="todo.done = !todo.done">
+          <i :class="todo.done ? 'far fa-check-circle' : 'far fa-circle'" />
         </span>
 
-        <span>{{ this.todo.title }}</span>
+        <span>{{ todo.title }}</span>
       </span>
     </header>
 
@@ -43,7 +57,7 @@ export default {
         <span class="icon-text" @click="toggleCategoryModal">
           <span class="icon clickable"><i class="far fa-folder" /></span>
 
-          <span class="clickable">{{ this.todo.category }}</span>
+          <span class="clickable capitalize">{{ todo.category }}</span>
         </span>
       </div>
 
@@ -52,17 +66,17 @@ export default {
       <div id="content">
         <div id="notes">
           <div>
-            <span class="icon-text" @click="editMode = !editMode">
+            <span class="icon-text clickable" @click="editMode = !editMode">
               <span class="icon"><i class="far fa-edit" /></span>
-              <span>{{ this.todo.content && this.todo.content ? "Notes" : "Add Note" }}</span>
+              <span>{{ todo.content.length ? "Notes" : "Add Note" }}</span>
             </span>
           </div>
           <div class="pt-2 display-note" v-if="!editMode">
-            {{ this.todo.content }}
+            {{ todo.content }}
           </div>
           <div class="pt-2 edit-note field" v-if="editMode">
             <div class="control">
-              <!-- <textarea class="textarea is-medium" v-model="this.todo.content" /> -->
+              <textarea class="textarea is-small" rows=7 v-model="todo.content" />
             </div>
           </div>
         </div>
