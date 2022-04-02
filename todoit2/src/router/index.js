@@ -1,6 +1,5 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-// import { createRouter, createWebHistory } from "vue-router";
 
 import DoneView from "../views/DoneView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
@@ -55,14 +54,8 @@ const routes = [
   },
 ];
 
-// const router = createRouter({
-//   history: createWebHistory(),
-//   routes,
-// });
-
 const router = new VueRouter({
   mode: "history",
-  // history: createWebHistory(),
   base: process.env.BASE_URL,
   routes,
 });

@@ -1,13 +1,14 @@
 <script>
-import TheTopBar from "./TheTopBar.vue";
 
 export default {
   name: "TheTodo",
+  data() {
+    return {
+      editMode: false,
+    }
+  },
   props: {
     todo: Object,
-  },
-  components: {
-    TheTopBar,
   },
 
   methods: {
@@ -23,8 +24,6 @@ export default {
 
 <template>
   <div id="todo">
-    <TheTopBar />
-
     <header class="pt-2">
       <span
         class="icon-text"
@@ -53,13 +52,18 @@ export default {
       <div id="content">
         <div id="notes">
           <div>
-            <span class="icon-text">
+            <span class="icon-text" @click="editMode = !editMode">
               <span class="icon"><i class="far fa-edit" /></span>
               <span>{{ this.todo.content && this.todo.content ? "Notes" : "Add Note" }}</span>
             </span>
           </div>
-          <div class="pt-2">
+          <div class="pt-2 display-note" v-if="!editMode">
             {{ this.todo.content }}
+          </div>
+          <div class="pt-2 edit-note field" v-if="editMode">
+            <div class="control">
+              <!-- <textarea class="textarea is-medium" v-model="this.todo.content" /> -->
+            </div>
           </div>
         </div>
       </div>

@@ -1,6 +1,5 @@
 <script>
 import ListItem from "@/components/ListItem.vue";
-import TheTopBar from "@/components/TheTopBar.vue";
 
 export default {
   name: "TheCompletedList",
@@ -10,7 +9,6 @@ export default {
   },
   components: {
     ListItem,
-    TheTopBar,
   },
 
   computed: {
@@ -22,11 +20,8 @@ export default {
 </script>
 
 <template>
-  <div id="todo-list">
-
-    <TheTopBar></TheTopBar>
-
-    <header>Completed {{ this.category }} Todos</header>
+  <div id="list-container">
+    <header class="capitalize">Completed {{ this.category }} Todos</header>
 
     <ListItem
       v-for="todo in completedTodos"
@@ -35,3 +30,7 @@ export default {
     />
   </div>
 </template>
+
+<style lang="sass" scoped>
+@import "@/assets/styles/global.sass"
+</style>

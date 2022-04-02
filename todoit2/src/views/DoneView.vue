@@ -1,5 +1,6 @@
 <script>
 import TheCompletedList from "@/components/TheCompletedList.vue";
+import TheTopBar from "@/components/TheTopBar.vue";
 
 export default {
   name: "DoneView",
@@ -11,6 +12,7 @@ export default {
   },
   components: {
     TheCompletedList,
+    TheTopBar,
   },
 
   mounted() {
@@ -40,7 +42,8 @@ export default {
 </script>
 
 <template>
-  <main>
+  <div>
+    <TheTopBar />
     <TheCompletedList v-if="todos" :category="category" :todos="todos" />
-  </main>
+  </div>
 </template>

@@ -1,27 +1,45 @@
 <script>
 import $ from "jquery";
 import ListItem from "@/components/ListItem.vue";
-import TheTopBar from "@/components/TheTopBar.vue";
 
 export default {
   name: "TheList",
   data() {
     return {
+      todos: [],
       newTodo: null,
       hideCompleted: false,
     };
   },
   props: {
     category: String,
-    todos: Array,
   },
   components: {
     ListItem,
-    TheTopBar,
   },
 
   mounted() {
-    adjustInputWidth();
+    this.adjustInputWidth();
+    $(window).resize(() => {
+      this.adjustInputWidth();
+    });
+
+    // CTNTODO: fetch todos by category here
+    this.todos = [
+      {
+        id: 0,
+        title: "This is a todo",
+        content:
+          "Some notes here...Very very long long long long long long long long long long long even longer!!!!!!!!!!! long long long long",
+        done: false,
+      },
+      {
+        id: 1,
+        title: "This is a complete todo",
+        content: "More notes...",
+        done: true,
+      },
+    ];
   },
   computed: {
     openTodos() {
@@ -32,39 +50,34 @@ export default {
     },
   },
   methods: {
+    // new-todo input has fixed positioning
+    // thus needs to be manually sized to fit width of parent container
+    adjustInputWidth() {
+      $("#new-todo").width($('#list-container').width());
+    },
     addItem() {
+      console.log(this.todos);
+      console.log(this.newTodo);
       if (this.newTodo && this.newTodo.length) {
-        // this.todos.unshift({
-        //   id: 1111,
-        //   title: this.newTodo,
-        //   category: this.category || ''
-        //   content: "",
-        //   done: false,
-        // });
-        this.todo = null;
+        this.todos.unshift({
+          id: 1111,
+          title: this.newTodo,
+          category: this.category || "",
+          content: "",
+          done: false,
+        });
+
+        this.newTodo = null;
       } else { // CTN-TODO: flash box red - alert class // CTN-TODO: also attach a key-up that removes the alert class
         console.log("leave me alone linter.");
       }
     },
   },
 };
-
-// new-todo input has fixed positioning
-// thus needs to be manually sized to fit width of parent container
-let adjustInputWidth = () => {
-  let parentWidth = $("#todo-list").width();
-  $(".new-todo").width(parentWidth);
-}
-
-$(window).resize(() => {
-  adjustInputWidth();
-});
 </script>
 
 <template>
-  <div id="todo-list">
-    <TheTopBar />
-
+  <div id="list-container" class="full-height">
     <header>{{ this.category.length ? this.category : "Todos" }}</header>
 
     <ListItem
@@ -94,7 +107,7 @@ $(window).resize(() => {
       @status="todo.done = !todo.done"
     />
 
-    <div class="field top-pad pb-5 fixed new-todo">
+    <div id="new-todo" class="field top-pad pb-5 fixed">
       <div class="control has-icons-left bottom-pad">
         <input
           class="input"
@@ -118,6 +131,6 @@ $(window).resize(() => {
   font-size: 0.75em
   border-radius: 3px !important
 
-.new-todo
+#new-todo
   bottom: 0em
 </style>
