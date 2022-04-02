@@ -3,23 +3,35 @@ export default {
   name: "BaseCategoryList",
   data() {
     return {
-      categories: Array,
+      categories: ['all'],
     }
+  },
+  props: {
+    currentCategory: null,
   },
   emits: ["category"],
 
   mounted() {
     console.log('fetch possible categories...');
-    this.categories = [
+    // move current category to top of array
+    let fetched = [
       'shopping',
       'grocery',
     ];
+
+    this.categories = [...this.categories, ...fetched];
   },
 };
 </script>
 
 <template>
   <div id="category-list">
-    {{ categories }}
+    <div class="menu box capitalize left clickable"
+      v-for="category in categories" 
+      :key="category" 
+      @click="$emit('category', category)" 
+    >
+      {{ category }}
+    </div>
   </div>
 </template>

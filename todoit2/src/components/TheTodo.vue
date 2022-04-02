@@ -1,15 +1,20 @@
 <script>
+import BaseCategoryList from "./BaseCategoryList.vue";
 
 export default {
   name: "TheTodo",
   data() {
     return {
-      todo: null,
       editMode: false,
+      showCategories: false,
+      todo: null,
     }
   },
   props: {
     id: Number,
+  },
+  components: {
+    BaseCategoryList,
   },
 
   mounted() {
@@ -27,11 +32,9 @@ export default {
     }
   },
   methods: {
-    toggleCategoryModal() {
-      console.log('toggleCategorymodal stub from TheTodo.vue');
-    },
-    setCategory() {
-      console.log('setCategory stub from TheTodo.vue');
+    setCategory(category) {
+      this.todo.category = category;
+      this.showCategories = !this.showCategories;
     },
   },
 };
@@ -48,17 +51,25 @@ export default {
           <i :class="todo.done ? 'far fa-check-circle' : 'far fa-circle'" />
         </span>
 
-        <span>{{ todo.title }}</span>
+        <span :class="todo.done ? 'done' : ''">{{ todo.title }}</span>
       </span>
     </header>
 
     <div class="box">
       <div id="category">
-        <span class="icon-text" @click="toggleCategoryModal">
+        <span class="icon-text" @click="showCategories = !showCategories" title="Tap to edit">
           <span class="icon clickable"><i class="far fa-folder" /></span>
-
           <span class="clickable capitalize">{{ todo.category }}</span>
         </span>
+
+        <div class="modal is-active" v-if="showCategories">
+          <div class="modal-background"></div>
+          <div class="modal-content">
+            <div class="box center container">
+              <BaseCategoryList :currentCategory="todo.category" @category="setCategory" />
+            </div>
+          </div>
+        </div>
       </div>
 
       <hr />
@@ -66,7 +77,7 @@ export default {
       <div id="content">
         <div id="notes">
           <div>
-            <span class="icon-text clickable" @click="editMode = !editMode">
+            <span class="icon-text clickable" @click="editMode = !editMode" title="Tap to edit">
               <span class="icon"><i class="far fa-edit" /></span>
               <span>{{ todo.content.length ? "Notes" : "Add Note" }}</span>
             </span>
@@ -93,5 +104,4 @@ header
 
 header .icon
   font-size: 0.75em
-
 </style>

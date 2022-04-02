@@ -78,7 +78,7 @@ export default {
 
 <template>
   <div id="list-container" class="full-height">
-    <header>{{ this.category.length ? this.category : "Todos" }}</header>
+    <header class="capitalize">{{ this.category.length ? this.category : "Todos" }}</header>
 
     <ListItem
       v-for="todo in openTodos"

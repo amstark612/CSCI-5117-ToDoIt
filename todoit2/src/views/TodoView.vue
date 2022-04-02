@@ -26,7 +26,7 @@ export default {
 <template>
   <div>
     <TheTopBar />
-    <TheTodo v-if="id" :id="id" />
+    <TheTodo v-if="id != null" :id="id" />
   </div>
 </template>
 

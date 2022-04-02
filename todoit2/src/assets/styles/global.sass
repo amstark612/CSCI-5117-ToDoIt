@@ -16,10 +16,6 @@ body
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
 
-.clickable
-  cursor: pointer
-  pointer-events: all !important
-
 header
   font-size: 2em
 
@@ -32,3 +28,30 @@ hr
 .icon.is-extra-large
     color: $secondary
     font-size: 5em
+
+.clickable
+  cursor: pointer
+  pointer-events: all !important
+
+.done
+  text-decoration: line-through
+
+// menu
+.menu.box
+  padding-top: 5px
+  padding-bottom: 5px
+  margin-top: 0.5em
+  margin-bottom: 0.5em
+
+.modal-content
+  position: fixed
+  bottom: 0%
+  max-width: 800px
+
+.modal-content .container
+  background-color: $dark-olive
+  border-bottom-left-radius: 0px
+  border-bottom-right-radius: 0px
+
+.modal-content .muted
+  color: $light-olive

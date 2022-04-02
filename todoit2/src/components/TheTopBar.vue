@@ -6,27 +6,24 @@ export default {
     data: function () {
         return {
             showOptions: false,
-            categories: null,
         };
     },
     components: {
       BaseCategoryList,
     },
 
-    mounted() {
-      console.log('fetch list of categories from the db...');
-      this.categories = [
-        'shopping',
-        'grocery',
-        'school',
-      ];
-    },
     methods: {
         back() {
             this.$router.go(-1);
         },
         toggleOptions() {
             this.showOptions = !this.showOptions;
+        },
+        goToCategory(category) {
+            this.$router.push({
+              name: "todos",
+              params: { category: category },
+            });
         },
     },
 };
@@ -66,11 +63,6 @@ export default {
           <div class="pb-2 heading"><strong class="primary">Categories</strong></div>
 
           <BaseCategoryList @category="goToCategory" />
-          <!-- INCLUDE 'ALL', 'DONE'
-          <div class="box left">
-            Category links go here
-          </div>
-          -->
         </div>
       </div>
     </div>
@@ -91,15 +83,6 @@ nav
 
 .nav-link, .nav-link:hover
   color: $light-olive
-
-.modal-content
-    position: fixed
-    bottom: 0%
-    max-width: 800px
-
-.container
-    border-bottom-left-radius: 0px
-    border-bottom-right-radius: 0px
 
 .heading
   font-size: 1em

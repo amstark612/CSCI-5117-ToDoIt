@@ -12,7 +12,7 @@ export default {
   <div class="box mb-3">
     <span
       class="icon-text todo-contents"
-      :class="this.todo.done ? 'muted' : ''"
+      :class="this.todo.done ? 'muted done' : ''"
     >
       <span class="icon clickable" @click="$emit('status')">
         <i :class="this.todo.done ? 'far fa-check-circle' : 'far fa-circle'" />
@@ -41,12 +41,8 @@ export default {
   color: $dark-olive
   font-style: italic
 
-.muted
+.muted, .muted a, .muted a:visited
     color: $dark-olive
-    text-decoration: line-through
-
-.muted a, a:visited
-    color: inherit
 
 a, a:visited
     color: inherit
