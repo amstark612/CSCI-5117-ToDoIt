@@ -27,11 +27,17 @@ export default {
 <template>
   <div id="category-list">
     <div class="menu box capitalize left clickable"
+      :class="category == currentCategory.toLowerCase() ? 'selected' : ''"
       v-for="category in categories" 
       :key="category" 
       @click="$emit('category', category)" 
     >
-      {{ category }}
+      <span class="icon-text">
+        {{ category }}
+        <span v-if="category == currentCategory.toLowerCase()" class="icon pl-1">
+          <i class="fas fa-check" />
+        </span>
+      </span>
     </div>
   </div>
 </template>

@@ -5,7 +5,10 @@ export default {
     name: "TheTopBar",
     data: function () {
         return {
-            showOptions: false,
+          categoryKey: 0,
+          newCategory: null,
+          showInput: false,
+          showOptions: false,
         };
     },
     components: {
@@ -13,18 +16,28 @@ export default {
     },
 
     methods: {
-        back() {
-            this.$router.go(-1);
-        },
-        toggleOptions() {
-            this.showOptions = !this.showOptions;
-        },
-        goToCategory(category) {
-            this.$router.push({
-              name: "todos",
-              params: { category: category },
-            });
-        },
+      addCategory() {
+        console.log("add category to db....");
+        this.categoryKey += 1;
+      },
+
+      back() {
+          this.$router.go(-1);
+      },
+
+      goToCategory(category) {
+        // CTNTODO this does not work.
+        this.$router.push({
+          name: "todos",
+          params: { category: category },
+        }).then(() => {
+          return;
+        });
+      },
+
+      toggleOptions() {
+          this.showOptions = !this.showOptions;
+      },
     },
 };
 </script>
@@ -60,9 +73,33 @@ export default {
             </div>
           </div>
 
-          <div class="pb-2 heading"><strong class="primary">Categories</strong></div>
+          <div class="pb-2 heading">
+            <span class="icon-text">
+              <strong class="primary">Categories</strong>
+              <span class="icon clickable ml-0" @click="showInput = !showInput">
+                <small><i class="fas fa-plus" /></small>
+              </span>
+            </span>
+          </div>
 
-          <BaseCategoryList @category="goToCategory" />
+          <div v-if="showInput" id="new-category" class="field">
+            <div class="control has-icons-left">
+              <input
+                class="input"
+                v-model.trim="newCategory"
+                v-on:keyup.enter="addCategory"
+              />
+              <span class="icon clickable is-small is-left" @click="addCategory">
+                <i class="fas fa-plus" />
+              </span>
+            </div>
+          </div>
+          <BaseCategoryList 
+            :key="categoryKey"
+            :currentCategory="this.$route.params.category ? this.$route.params.category : 'all'" 
+            @category="goToCategory" 
+          />
+
         </div>
       </div>
     </div>
