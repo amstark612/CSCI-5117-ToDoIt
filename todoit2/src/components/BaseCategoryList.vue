@@ -32,12 +32,20 @@ export default {
       :key="category" 
       @click="$emit('category', category)" 
     >
-      <span class="icon-text">
-        {{ category }}
-        <span v-if="category == currentCategory.toLowerCase()" class="icon pl-1">
-          <i class="fas fa-check" />
+      <div>
+        <span class="icon-text">
+          {{ category }}
+          <span v-if="category == currentCategory.toLowerCase()" class="icon pl-1">
+            <i class="fas fa-check" />
+          </span>
         </span>
-      </span>
+      </div>
+
+      <div>
+        <span class="icon clickable is-small">
+          <i class="fas fa-times" />
+        </span>
+      </div>
     </div>
   </div>
 </template>

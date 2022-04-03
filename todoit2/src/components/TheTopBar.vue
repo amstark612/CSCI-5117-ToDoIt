@@ -1,10 +1,11 @@
 <script>
-import BaseCategoryList from "./BaseCategoryList.vue";
+import BaseMenuItem from "./BaseMenuItem.vue";
 
 export default {
     name: "TheTopBar",
     data: function () {
         return {
+          categories: [],
           categoryKey: 0,
           newCategory: null,
           showInput: false,
@@ -12,17 +13,27 @@ export default {
         };
     },
     components: {
-      BaseCategoryList,
+      BaseMenuItem,
+    },
+
+    mounted() {
+      this.categories = ['grocery', 'school', 'shopping'];
+      // don't forget to remove 'all' from list
     },
 
     methods: {
+      back() {
+          this.$router.go(-1);
+      },
+
       addCategory() {
         console.log("add category to db....");
         this.categoryKey += 1;
       },
 
-      back() {
-          this.$router.go(-1);
+      deleteCategory(category) {
+        console.log("delete " + category + " from db....");
+        this.categoryKey += 1;
       },
 
       goToCategory(category) {
@@ -32,6 +43,14 @@ export default {
           params: { category: category },
         }).then(() => {
           return;
+        });
+      },
+
+      // CTNTODO also does not work.
+      goToPage(route) {
+        console.log("go to page!!!");
+        this.$router.push({
+          name: route,
         });
       },
 
@@ -94,12 +113,24 @@ export default {
               </span>
             </div>
           </div>
-          <BaseCategoryList 
-            :key="categoryKey"
-            :currentCategory="this.$route.params.category ? this.$route.params.category : 'all'" 
-            @category="goToCategory" 
+
+          <BaseMenuItem
+            :category="'all'"
+            :navigate="goToPage"
           />
 
+          <BaseMenuItem
+            v-for="category in categories"
+            :key="category"
+            :category="category"
+            :navigate="goToCategory"
+            :delete="deleteCategory"
+          />
+
+          <BaseMenuItem 
+            :category="'done'" 
+            :navigate="goToPage"
+          />
         </div>
       </div>
     </div>

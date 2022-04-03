@@ -1,10 +1,11 @@
 <script>
-import BaseCategoryList from "./BaseCategoryList.vue";
+import BaseMenuItem from "./BaseMenuItem.vue";
 
 export default {
   name: "TheTodo",
   data() {
     return {
+      categories: [],
       editMode: false,
       showCategories: false,
       todo: null,
@@ -14,7 +15,7 @@ export default {
     id: Number,
   },
   components: {
-    BaseCategoryList,
+    BaseMenuItem,
   },
 
   mounted() {
@@ -27,6 +28,13 @@ export default {
         content: "Todo notes",
         done: false,
       };
+
+      // don't forget to remove 'all' from list
+      this.categories = [
+        'grocery',
+        'school',
+        'shopping',
+      ];
     } else {
       console.log('redirect or go to 404 here...');
     }
@@ -66,7 +74,17 @@ export default {
           <div class="modal-background"></div>
           <div class="modal-content">
             <div class="box center container">
-              <BaseCategoryList :currentCategory="todo.category" @category="setCategory" />
+              <BaseMenuItem
+                :category="'all'"
+                :itemCategory="todo.category"
+              />
+
+              <BaseMenuItem
+                v-for="category in categories"
+                :key="category"
+                :category="category"
+                :itemCategory="todo.category"
+              />
             </div>
           </div>
         </div>
