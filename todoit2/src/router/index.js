@@ -1,3 +1,4 @@
+import { auth } from "@/firebaseConfig";
 import Vue from "vue";
 import VueRouter from "vue-router";
 
@@ -17,26 +18,41 @@ const routes = [
   {
     path: "/todos",
     name: "todos",
+    meta: {
+      requiresAuth: true,
+    },
     component: TodosView,
   },
   {
     path: "/todos/:category",
     name: "todo/:category",
+    meta: {
+      requiresAuth: true,
+    },
     component: TodosView,
   },
   {
     path: "/done",
     name: "done",
+    meta: {
+      requiresAuth: true,
+    },
     component: DoneView,
   },
   {
     path: "/done/:category",
     name: "done/:category",
+    meta: {
+      requiresAuth: true,
+    },
     component: DoneView,
   },
   {
     path: "/todo/:id",
     name: "todo",
+    meta: {
+      requiresAuth: true,
+    },
     component: () => import("../views/TodoView.vue"),
   },
   // {
@@ -58,6 +74,16 @@ const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const requiresAuth = to.matched.some(route => route.meta.requiresAuth);
+
+  if (requiresAuth && !auth.currentUser) {
+    next("/");
+  } else {
+    next();
+  }
 });
 
 export default router;

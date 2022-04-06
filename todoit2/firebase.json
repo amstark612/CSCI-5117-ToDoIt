@@ -1,6 +1,7 @@
 {
   "hosting": {
     "public": "dist",
+    "site": "todoit-5117",
     "ignore": [
       "firebase.json",
       "**/.*",
