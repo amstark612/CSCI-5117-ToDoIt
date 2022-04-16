@@ -11,7 +11,7 @@ export default {
     category: String,
     itemCategory: String,
   },
-  emits: ["delete", "navigate"],
+  emits: ["delete", "pick"],
 
   // THIS IS SO HACKY SORRY!!
   mounted() {
@@ -37,7 +37,7 @@ export default {
   <div>
     <div class="menu box capitalize left" :class="selected ? 'selected' : ''">
 
-      <div class="clickable" @click="$emit('navigate', category)">
+      <div class="clickable" @click="$emit('pick', category)">
         <span class="icon-text">
           {{ category }}
           <span v-if="selected" class="icon pl-1">

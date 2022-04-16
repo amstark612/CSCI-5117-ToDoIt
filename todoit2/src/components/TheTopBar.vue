@@ -36,12 +36,6 @@ export default {
       });
     },
 
-    // watch: {
-    //   categories() {
-    //     this.categoryKey += 1;
-    //   }
-    // },
-
     methods: {
       back() {
           this.$router.go(-1);
@@ -157,20 +151,20 @@ export default {
 
           <BaseMenuItem
             :category="'all'"
-            @navigate="goToPage"
+            @pick="goToPage"
           />
 
           <BaseMenuItem
             v-for="category in categories"
             :key="category"
             :category="category"
-            @navigate="goToCategory"
+            @pick="goToCategory"
             @delete="deleteCategory"
           />
 
           <BaseMenuItem 
             :category="'done'" 
-            @navigate="goToPage"
+            @pick="goToPage"
           />
         </div>
       </div>

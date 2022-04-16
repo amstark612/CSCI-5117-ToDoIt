@@ -1,5 +1,6 @@
 <script>
-import { db } from "@/main";
+import { auth, db } from "@/main";
+import firebase from "firebase/app";
 import BaseMenuItem from "./BaseMenuItem.vue";
 
 export default {
@@ -7,6 +8,7 @@ export default {
   data() {
     return {
       categories: [],
+      firestoreDocId: null,
       editMode: false,
       showCategories: false,
       todo: null,
@@ -28,6 +30,21 @@ export default {
   },
 
   firestore() {
+    db.collection("categories")
+      .where("user_id", "==", auth.currentUser.uid)
+      .get()
+      .then(result => {
+        result.forEach(data => {
+          this.firestoreDocId = data.id;
+
+          data.data().categories.forEach(category => {
+            this.categories.push(category);
+          });
+        });
+
+        this.categories.sort();
+    });      
+
     return {
       todo: db.collection("todos").doc(this.id),
     }
@@ -42,13 +59,23 @@ export default {
   },
 
   methods: {
+    deleteCategory(category) {
+      db.collection("categories")
+        .doc(this.firestoreDocId)
+        .update({
+          categories: firebase.firestore.FieldValue.arrayRemove(category.toLowerCase()),
+      });
+
+      this.categories = this.categories.filter((cat) => cat != category);
+    },
+
     setCategory(category) {
-      this.todo.category = category;
+      db.collection("todos").doc(this.id).update({category: category});
       this.showCategories = !this.showCategories;
     },
    
-    toggleTodoStatus(id, status) {
-      db.collection("todos").doc(id).update({done: status});
+    toggleTodoStatus() {
+      db.collection("todos").doc(this.id).update({done: !this.todo.done});
     },
   },
 };
@@ -61,7 +88,7 @@ export default {
         class="icon-text"
         :class="todo.done ? 'muted' : ''"
       >
-        <span class="icon clickable" @click="toggleTodoStatus(todo.id, !todo.done)">
+        <span class="icon clickable" @click="toggleTodoStatus">
           <i :class="todo.done ? 'far fa-check-circle' : 'far fa-circle'" />
         </span>
 
@@ -83,6 +110,7 @@ export default {
               <BaseMenuItem
                 :category="'all'"
                 :itemCategory="todo.category"
+                @pick="setCategory"
               />
 
               <BaseMenuItem
@@ -90,6 +118,8 @@ export default {
                 :key="category"
                 :category="category"
                 :itemCategory="todo.category"
+                @pick="setCategory"
+                @delete="deleteCategory"
               />
             </div>
           </div>
