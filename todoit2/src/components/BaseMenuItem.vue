@@ -50,7 +50,7 @@ export default {
         <span 
           v-if="mutable" 
           class="icon clickable is-small"
-          @click="$emit('delete')">
+          @click="$emit('delete', category)">
           <i class="fas fa-times" />
         </span>
       </div>

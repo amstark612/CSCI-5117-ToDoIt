@@ -1,5 +1,6 @@
 <script>
 import { auth, db } from "@/main";
+import firebase from "firebase/app";
 import BaseMenuItem from "./BaseMenuItem.vue";
 
 export default {
@@ -8,6 +9,7 @@ export default {
         return {
           categories: [],
           categoryKey: 0,
+          firestoreDocId: null,
           newCategory: null,
           showInput: false,
           showOptions: false,
@@ -18,21 +20,27 @@ export default {
     },
 
     firestore() {
-      db.collection("todos")
-         .where("user_id", "==", auth.currentUser.uid)
-         .get()
-         .then((todos) => {
-           todos.forEach(todo => {
-             let category = todo.data().category;
-             if (category != "all" && !this.categories.includes(category)) {
-              this.categories.push(todo.data().category.toLowerCase());
-             }
-           })
+      db.collection("categories")
+        .where("user_id", "==", auth.currentUser.uid)
+        .get()
+        .then(result => {
+          result.forEach(data => {
+            this.firestoreDocId = data.id;
 
-           this.categoryKey += 1;
-           return this.categories;
+            data.data().categories.forEach(category => {
+              this.categories.push(category);
+            });
+          });
+
+          this.categories.sort();
       });
     },
+
+    // watch: {
+    //   categories() {
+    //     this.categoryKey += 1;
+    //   }
+    // },
 
     methods: {
       back() {
@@ -40,13 +48,25 @@ export default {
       },
 
       addCategory() {
-        console.log("add category to db....");
-        this.categoryKey += 1;
+        db.collection("categories")
+          .doc(this.firestoreDocId)
+          .update({
+            categories: firebase.firestore.FieldValue.arrayUnion(this.newCategory.toLowerCase()),
+        });
+
+        this.categories.push(this.newCategory.toLowerCase());
+        this.showInput = false;
+        this.newCategory = null;
       },
 
       deleteCategory(category) {
-        console.log("delete " + category + " from db....");
-        this.categoryKey += 1;
+        db.collection("categories")
+          .doc(this.firestoreDocId)
+          .update({
+            categories: firebase.firestore.FieldValue.arrayRemove(category.toLowerCase()),
+        });
+
+        this.categories = this.categories.filter((cat) => cat != category);
       },
 
       goToCategory(category) {
@@ -62,6 +82,7 @@ export default {
       goToPage(route) {
         this.showOptions = false;
         this.$router.push({
+          // CTN_TODO: more hack -_-
           name: route == "all" ? "todos" : route,
         });
       },

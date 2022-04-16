@@ -87,7 +87,6 @@ export default {
           created_at: Date.now(),
         }).then(ref => {
           console.log(ref.id);
-          // CTN_TODO possibly update something here?
         });
 
         this.newTodo = null;
@@ -98,7 +97,7 @@ export default {
 
     toggleTodoStatus(id, status) {
       db.collection("todos").doc(id).update({done: status});
-    }
+    },
   },
 };
 </script>
