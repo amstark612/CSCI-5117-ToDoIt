@@ -53,6 +53,22 @@ export default {
     }
   },
 
+  watch: {
+    category() {
+      db.collection("todos")
+        .where("user_id", "==", auth.currentUser.uid)
+        .where("category", "==", this.category)
+        .orderBy("created_at")
+        .get()
+        .then(todos => {
+          this.todos = [];
+          todos.forEach(todo => {
+            this.todos.push(todo.data());
+          });
+        });
+    },
+  },
+
   methods: {
     // new-todo input field has fixed positioning
     // thus needs to be manually sized to fit width of parent container

@@ -20,9 +20,11 @@ export default {
   },
 
   mounted() {
-    if (!db.collection("todos").doc(this.id).get().exists) {
-      this.$router.push("/NotFound");
-    }
+    db.collection("todos").doc(this.id).get().then(todo => {
+      if (!todo.exists) {
+        this.$router.push("/NotFound");
+      }
+    });
   },
 
   firestore() {

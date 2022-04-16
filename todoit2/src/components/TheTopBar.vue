@@ -4,7 +4,7 @@ import BaseMenuItem from "./BaseMenuItem.vue";
 
 export default {
     name: "TheTopBar",
-    data: function () {
+    data() {
         return {
           categories: [],
           categoryKey: 0,
@@ -22,22 +22,16 @@ export default {
          .where("user_id", "==", auth.currentUser.uid)
          .get()
          .then((todos) => {
-           console.log(todos.length);
            todos.forEach(todo => {
-             this.categories << todo.data().category.toLowerCase();
-             console.log(this.categories);
+             let category = todo.data().category;
+             if (category != "all" && !this.categories.includes(category)) {
+              this.categories.push(todo.data().category.toLowerCase());
+             }
            })
 
            this.categoryKey += 1;
            return this.categories;
       });
-    },
-
-    watch: {
-      categoryKey() {
-        console.log(this.categories);
-        // this.categoryKey += 1;
-      }
     },
 
     methods: {
