@@ -1,6 +1,5 @@
 <script>
-import { auth, provider } from "@/firebaseConfig";
-import { onAuthStateChanged, signInWithRedirect, signOut } from "firebase/auth";
+import { auth, provider } from "@/main";
 
 export default {
   name: "SplashView",
@@ -11,22 +10,23 @@ export default {
   },
   
   beforeCreate() {
-    onAuthStateChanged(auth, user => {
-      if (user) {
-        this.user = user;
+    auth.onAuthStateChanged(user =>  {
+      this.user = user ? user : null;
+      if (this.user) {
+        this.$router.push("/todos");
       }
     });
   },
   methods: {
     signInWithGoogle() {
-      signInWithRedirect(auth, provider)
+      auth.signInWithRedirect(provider)
         .then(result => {
           this.user = result.user;
         })
         .catch(err => console.log(err));
     },
     signOut() {
-      signOut(auth)
+      auth.signOut()
         .then(() => {
           this.user = null;
         })

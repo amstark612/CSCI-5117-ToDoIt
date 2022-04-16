@@ -1,4 +1,5 @@
 <script>
+// import { auth } from "@/main";
 import BaseMenuItem from "./BaseMenuItem.vue";
 
 export default {
@@ -37,25 +38,32 @@ export default {
       },
 
       goToCategory(category) {
-        // CTNTODO this does not work.
+        this.showOptions = false;
         this.$router.push({
-          name: "todos",
+          name: "todos/:category",
           params: { category: category },
         }).then(() => {
           return;
         });
       },
 
-      // CTNTODO also does not work.
       goToPage(route) {
-        console.log("go to page!!!");
+        this.showOptions = false;
         this.$router.push({
-          name: route,
+          name: route == "all" ? "todos" : route,
         });
       },
 
       toggleOptions() {
           this.showOptions = !this.showOptions;
+      },
+
+      signOut() {
+        //auth.signOut()
+        //  .then(() => {
+        //    this.user = null;
+        //  })
+        //  .catch(err => console.log(err));
       },
     },
 };
@@ -85,7 +93,7 @@ export default {
         <div class="box center container">
           <div class="quick-nav">
             <div>
-              <a class="muted"><small class="upper">Log out</small></a>
+              <a class="muted" @click="signOut"><small class="upper">Log out</small></a>
             </div>
             <div class="right">
               <a class="muted" @click="toggleOptions"><small class="upper">Done</small></a>
@@ -116,20 +124,20 @@ export default {
 
           <BaseMenuItem
             :category="'all'"
-            :navigate="goToPage"
+            @navigate="goToPage"
           />
 
           <BaseMenuItem
             v-for="category in categories"
             :key="category"
             :category="category"
-            :navigate="goToCategory"
-            :delete="deleteCategory"
+            @navigate="goToCategory"
+            @delete="deleteCategory"
           />
 
           <BaseMenuItem 
             :category="'done'" 
-            :navigate="goToPage"
+            @navigate="goToPage"
           />
         </div>
       </div>

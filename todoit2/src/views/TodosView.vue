@@ -14,8 +14,14 @@ export default {
     TheTopBar,
   },
 
-  mounted() {
-    this.category = this.$route.params.category || "";
+  // mounted() {
+  //   this.category = this.$route.params.category || "";
+  // },
+  watch: {
+    $route() {
+      this.category = this.$route.params.category || "";
+      // CTNTODO close modal
+    },
   },
 };
 </script>

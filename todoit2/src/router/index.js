@@ -1,4 +1,4 @@
-import { auth } from "@/firebaseConfig";
+import { auth } from "@/main";
 import Vue from "vue";
 import VueRouter from "vue-router";
 
@@ -25,7 +25,7 @@ const routes = [
   },
   {
     path: "/todos/:category",
-    name: "todo/:category",
+    name: "todos/:category",
     meta: {
       requiresAuth: true,
     },
@@ -76,7 +76,7 @@ const router = new VueRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _, next) => {
   const requiresAuth = to.matched.some(route => route.meta.requiresAuth);
 
   if (requiresAuth && !auth.currentUser) {
