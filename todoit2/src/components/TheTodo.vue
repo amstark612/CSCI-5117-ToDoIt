@@ -25,6 +25,14 @@ export default {
     }
   },
 
+  watch: {
+    editMode() {
+      if (!this.showCategories && this.todo) {
+        db.collection("todos").doc(this.todo.id).update({content: this.todo.content});
+      }
+    }
+  },
+
   methods: {
     setCategory(category) {
       this.todo.category = category;
@@ -95,7 +103,7 @@ export default {
           </div>
           <div class="pt-2 edit-note field" v-if="editMode">
             <div class="control">
-              <textarea class="textarea is-small" rows=7 v-model="todo.content" />
+              <textarea class="textarea is-small" rows=7 v-model="todo.content" v-on:keyup.enter="editMode = !editMode" />
             </div>
           </div>
         </div>
