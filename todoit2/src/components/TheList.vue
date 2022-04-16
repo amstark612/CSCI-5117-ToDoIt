@@ -1,5 +1,6 @@
 <script>
 import $ from "jquery";
+import { auth, db } from "@/main";
 import ListItem from "@/components/ListItem.vue";
 
 export default {
@@ -23,24 +24,8 @@ export default {
     $(window).resize(() => {
       this.adjustInputWidth();
     });
-
-    // CTNTODO: fetch todos by category here
-    this.todos = [
-      {
-        id: 0,
-        title: "This is a todo",
-        content:
-          "Some notes here...Very very long long long long long long long long long long long even longer!!!!!!!!!!! long long long long",
-        done: false,
-      },
-      {
-        id: 1,
-        title: "This is a complete todo",
-        content: "More notes...",
-        done: true,
-      },
-    ];
   },
+
   computed: {
     openTodos() {
       return this.todos.filter((todo) => !todo.done);
@@ -49,22 +34,44 @@ export default {
       return this.hideCompleted ? [] : this.todos.filter((todo) => todo.done);
     },
   },
+
+  firestore() {
+    if (this.category) {
+      return {
+        todos: db.collection("todos")
+                 .where("user_id", "==", auth.currentUser.uid)
+                 .where("category", "==", this.category)
+                 .orderBy("created_at"),
+      }
+    } else {
+      return {
+        todos: db.collection("todos")
+                 .where("user_id", "==", auth.currentUser.uid)
+                 .orderBy("created_at"),
+
+      }
+    }
+  },
+
   methods: {
-    // new-todo input has fixed positioning
+    // new-todo input field has fixed positioning
     // thus needs to be manually sized to fit width of parent container
     adjustInputWidth() {
       $("#new-todo").width($('#list-container').width());
     },
+
     addItem() {
-      console.log(this.todos);
-      console.log(this.newTodo);
       if (this.newTodo && this.newTodo.length) {
-        this.todos.unshift({
-          id: 1111,
+        db.collection("todos").add({
           title: this.newTodo,
-          category: this.category || "",
+          category: this.category || "all",
+          user_id: auth.currentUser.uid,
           content: "",
           done: false,
+          created_at: Date.now(),
+        }).then(ref => {
+          console.log(ref.id);
+          // CTN_TODO possibly update something here?
         });
 
         this.newTodo = null;
@@ -72,6 +79,10 @@ export default {
         console.log("leave me alone linter.");
       }
     },
+
+    toggleTodoStatus(id, status) {
+      db.collection("todos").doc(id).update({done: status});
+    }
   },
 };
 </script>
@@ -84,7 +95,7 @@ export default {
       v-for="todo in openTodos"
       :key="todo.id"
       :todo="todo"
-      @status="todo.done = !todo.done"
+      @status="toggleTodoStatus(todo.id, !todo.done)"
     />
 
     <button class="button is-small mt-1 mb-2" @click="hideCompleted = !hideCompleted">
@@ -104,7 +115,7 @@ export default {
       v-for="todo in closedTodos"
       :key="todo.id"
       :todo="todo"
-      @status="todo.done = !todo.done"
+      @status="toggleTodoStatus(todo.id, !todo.done)"
     />
 
     <div id="new-todo" class="field top-pad pb-5 fixed">

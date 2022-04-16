@@ -1,4 +1,5 @@
 <script>
+import { db } from "@/main";
 import BaseMenuItem from "./BaseMenuItem.vue";
 
 export default {
@@ -12,37 +13,26 @@ export default {
     }
   },
   props: {
-    id: Number,
+    id: String,
   },
   components: {
     BaseMenuItem,
   },
 
-  mounted() {
-    if (this.id != null) {
-      console.log("fetching todo with id " + this.id + " ...");
-      this.todo = {
-        id: 1,
-        title: "A todo",
-        category: "Shopping",
-        content: "Todo notes",
-        done: false,
-      };
-
-      // don't forget to remove 'all' from list
-      this.categories = [
-        'grocery',
-        'school',
-        'shopping',
-      ];
-    } else {
-      console.log('redirect or go to 404 here...');
+  firestore() {
+    return {
+      todo: db.collection("todos").doc(this.id),
     }
   },
+
   methods: {
     setCategory(category) {
       this.todo.category = category;
       this.showCategories = !this.showCategories;
+    },
+   
+    toggleTodoStatus(id, status) {
+      db.collection("todos").doc(id).update({done: status});
     },
   },
 };
@@ -55,7 +45,7 @@ export default {
         class="icon-text"
         :class="todo.done ? 'muted' : ''"
       >
-        <span class="icon clickable" @click="todo.done = !todo.done">
+        <span class="icon clickable" @click="toggleTodoStatus(todo.id, !todo.done)">
           <i :class="todo.done ? 'far fa-check-circle' : 'far fa-circle'" />
         </span>
 

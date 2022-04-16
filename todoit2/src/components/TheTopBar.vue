@@ -1,5 +1,5 @@
 <script>
-// import { auth } from "@/main";
+import { auth, db } from "@/main";
 import BaseMenuItem from "./BaseMenuItem.vue";
 
 export default {
@@ -18,8 +18,28 @@ export default {
     },
 
     mounted() {
-      this.categories = ['grocery', 'school', 'shopping'];
+      // this.categories = ['grocery', 'school', 'shopping'];
       // don't forget to remove 'all' from list
+    },
+
+    firestore() {
+      db.collection("todos")
+         .where("user_id", "==", auth.currentUser.uid)
+         .get()
+         .then((todos) => {
+           todos.forEach(todo => {
+             this.categories << todo.data().category.toLowerCase();
+           })
+
+           return this.categories;
+      });
+    },
+
+    watch: {
+      categories() {
+        console.log(this.categories);
+        this.categoryKey += 1;
+      }
     },
 
     methods: {
@@ -59,11 +79,11 @@ export default {
       },
 
       signOut() {
-        //auth.signOut()
-        //  .then(() => {
-        //    this.user = null;
-        //  })
-        //  .catch(err => console.log(err));
+        auth.signOut()
+          .then(() => {
+            this.user = null;
+          })
+          .catch(err => console.log(err));
       },
     },
 };

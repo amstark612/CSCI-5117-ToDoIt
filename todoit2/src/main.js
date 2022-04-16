@@ -6,6 +6,7 @@ import router from "./router";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
+import { firestorePlugin } from "vuefire";
 
 import "./assets/styles/global.sass";
 
@@ -20,6 +21,8 @@ const firebaseConfig = {
   measurementId: "G-5JPBJPWQ5V"
 };
 
+Vue.use(firestorePlugin);
+
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 // const analytics = getAnalytics(app);
@@ -27,6 +30,7 @@ firebase.initializeApp(firebaseConfig);
 // init components
 export const auth = firebase.auth();
 export const provider = new firebase.auth.GoogleAuthProvider();
+export const db = firebase.firestore();
 
 Vue.config.productionTip = false;
 let app;

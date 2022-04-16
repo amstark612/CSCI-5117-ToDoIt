@@ -15,9 +15,9 @@ export default {
   },
 
   mounted() {
-    this.id = parseInt(this.$route.params.id);
+    this.id = this.$route.params.id;
     if (!this.id) {
-      // CTNTODO: redirect to todos page
+      this.$router.push("/NotFound");
     }
   }
 };
