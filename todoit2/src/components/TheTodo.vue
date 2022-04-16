@@ -19,6 +19,12 @@ export default {
     BaseMenuItem,
   },
 
+  mounted() {
+    if (!db.collection("todos").doc(this.id).get().exists) {
+      this.$router.push("/NotFound");
+    }
+  },
+
   firestore() {
     return {
       todo: db.collection("todos").doc(this.id),

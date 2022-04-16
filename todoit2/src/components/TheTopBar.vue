@@ -17,28 +17,26 @@ export default {
       BaseMenuItem,
     },
 
-    mounted() {
-      // this.categories = ['grocery', 'school', 'shopping'];
-      // don't forget to remove 'all' from list
-    },
-
     firestore() {
       db.collection("todos")
          .where("user_id", "==", auth.currentUser.uid)
          .get()
          .then((todos) => {
+           console.log(todos.length);
            todos.forEach(todo => {
              this.categories << todo.data().category.toLowerCase();
+             console.log(this.categories);
            })
 
+           this.categoryKey += 1;
            return this.categories;
       });
     },
 
     watch: {
-      categories() {
+      categoryKey() {
         console.log(this.categories);
-        this.categoryKey += 1;
+        // this.categoryKey += 1;
       }
     },
 
