@@ -1,20 +1,35 @@
-<script setup>
-import { onMounted, ref } from 'vue'
-import TheTopBar from '@/components/TheTopBar.vue'
+<script>
+import TheTodo from "@/components/TheTodo.vue";
+import TheTopBar from "@/components/TheTopBar.vue";
 
-let title = ref(null)
+export default {
+  name: "TodoView",
+  data() {
+    return {
+      id: null,
+    };
+  },
+  components: {
+    TheTodo,
+    TheTopBar,
+  },
 
-onMounted(() => {
-    console.log('get item info from db...')
-    // if no values, redirect to 404
-    title.value = 'Todo Title'
-})
+  mounted() {
+    this.id = this.$route.params.id;
+    if (!this.id) {
+      this.$router.push("/NotFound");
+    }
+  }
+};
 </script>
 
 <template>
+  <div>
     <TheTopBar />
+    <TheTodo v-if="id != null" :id="id" />
+  </div>
 </template>
 
-<style scoped lang="scss">
-
+<style lang="sass" scoped>
+@import "@/assets/styles/global.sass"
 </style>

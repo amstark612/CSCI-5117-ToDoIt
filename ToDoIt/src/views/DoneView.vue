@@ -1,32 +1,49 @@
-<script setup>
-import { onBeforeMount, ref } from 'vue'
-import { useRoute } from 'vue-router'
-import TheCompletedList from '@/components/TheCompletedList.vue'
+<script>
+import TheCompletedList from "@/components/TheCompletedList.vue";
+import TheTopBar from "@/components/TheTopBar.vue";
 
-let todos = ref(null)
-let category = ref('')
-let route = useRoute()
+export default {
+  name: "DoneView",
+  data() {
+    return {
+      todos: null,
+      category: null,
+    };
+  },
+  components: {
+    TheCompletedList,
+    TheTopBar,
+  },
 
-onBeforeMount(() => {
-    // fetch all categories
-    // check route category (route.params.category) matches one of those categories
-    // if not, load all
-    if (route.params) {
-        console.log('param')
+  mounted() {
+    this.category = this.$route.params.category || "";
+    if (this.category.length) {
+      console.log("fetching completed " + this.category + " todos...");
+    } else {
+      console.log("fetching all completed todos...");
     }
-    console.log('fetch done by category...and assign to todos...')
-    category.value = route.params.category
-    console.log(category)
-    todos.value = [
-        { id: 0, text: "This is a todo", content: "Some notes here...Very very long long long long long long long long long long long even longer!!!!!!!!!!! long long long long", done: false },
-        { id: 1, text: "This is a complete todo", content: "More notes...", done: true }
-    ]
-    console.log('hello from parent')
-})
+    this.todos = [
+      {
+        id: 0,
+        title: "This is a todo",
+        content:
+          "Some notes here...Very very long long long long long long long long long long long even longer!!!!!!!!!!! long long long long",
+        done: false,
+      },
+      {
+        id: 1,
+        title: "This is a complete todo",
+        content: "More notes...",
+        done: true,
+      },
+    ];
+  },
+};
 </script>
 
 <template>
-    <main>
-        <TheCompletedList :category="category" :todos="todos" />
-    </main>
+  <div>
+    <TheTopBar />
+    <TheCompletedList v-if="todos" :category="category" :todos="todos" />
+  </div>
 </template>

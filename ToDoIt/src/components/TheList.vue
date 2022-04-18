@@ -1,105 +1,162 @@
-<script setup>
-import { computed, ref } from 'vue'
-import ListItem from '@/components/ListItem.vue'
-import TheTopBar from '@/components/TheTopBar.vue'
+<script>
+import $ from "jquery";
+import { auth, db } from "@/firebaseConfig";
+import ListItem from "@/components/ListItem.vue";
 
-let props = defineProps({
+export default {
+  name: "TheList",
+  data() {
+    return {
+      todos: [],
+      newTodo: null,
+      hideCompleted: false,
+    };
+  },
+  props: {
     category: String,
-    todos: Array
-})
+  },
+  components: {
+    ListItem,
+  },
 
-let id = 0
-let todo = ref('')
-let hideCompleted = ref(false)
+  mounted() {
+    this.adjustInputWidth();
+    $(window).resize(() => {
+      this.adjustInputWidth();
+    });
+  },
 
-const addItem = () => {
-    if (todo.value) {
-        props.todos.unshift({ id: id++, text: todo.value, done: false })
-        todo.value = ''
+  computed: {
+    openTodos() {
+      return this.todos.filter((todo) => !todo.done);
+    },
+    closedTodos() {
+      return this.hideCompleted ? [] : this.todos.filter((todo) => todo.done);
+    },
+  },
+
+  firestore() {
+    if (this.category) {
+      return {
+        todos: db.collection("todos")
+                 .where("user_id", "==", auth.currentUser.uid)
+                 .where("category", "==", this.category)
+                 .orderBy("created_at"),
+      }
+    } else {
+      return {
+        todos: db.collection("todos")
+                 .where("user_id", "==", auth.currentUser.uid)
+                 .orderBy("created_at"),
+
+      }
     }
-}
+  },
 
-const openTodos = computed(() => {
-    return props.todos.filter((todo) => !todo.done )
-})
+  watch: {
+    category() {
+      db.collection("todos")
+        .where("user_id", "==", auth.currentUser.uid)
+        .where("category", "==", this.category)
+        .orderBy("created_at")
+        .get()
+        .then(todos => {
+          this.todos = [];
+          todos.forEach(todo => {
+            this.todos.push(todo.data());
+          });
+        });
+    },
+  },
 
-const closedTodos = computed(() => {
-    return hideCompleted.value ? [] : props.todos.filter((todo) => todo.done)
-})
+  methods: {
+    // new-todo input field has fixed positioning
+    // thus needs to be manually sized to fit width of parent container
+    adjustInputWidth() {
+      $("#new-todo").width($('#list-container').width());
+    },
 
-console.log('hello from child')
-console.log('from child ' + props.category)
+    addItem() {
+      if (this.newTodo && this.newTodo.length) {
+        db.collection("todos").add({
+          title: this.newTodo,
+          category: this.category || "all",
+          user_id: auth.currentUser.uid,
+          content: "",
+          done: false,
+          created_at: Date.now(),
+        }).then(ref => {
+          console.log(ref.id);
+        });
+
+        this.newTodo = null;
+      } else { // CTN-TODO: flash box red - alert class // CTN-TODO: also attach a key-up that removes the alert class
+        console.log("leave me alone linter.");
+      }
+    },
+
+    toggleTodoStatus(id, status) {
+      db.collection("todos").doc(id).update({done: status});
+    },
+  },
+};
 </script>
 
 <template>
-    <TheTopBar />
-
-    <!-- CTN-TODO: titleize -->
-    <header>{{ props.category.length ? props.category : '' }} Todos</header>
-
-    <!-- CTN-TODO: if no todos, show a cute message -->
+  <div id="list-container" class="full-height">
+    <header class="capitalize">{{ this.category.length ? this.category : "Todos" }}</header>
 
     <ListItem
-        v-for="todo in openTodos" 
-        :key="todo.id"
-        :id="todo.id"
-        :text="todo.text"
-        :content="todo.content"
-        :done="todo.done"
-        @status="todo.done = !todo.done"
+      v-for="todo in openTodos"
+      :key="todo.id"
+      :todo="todo"
+      @status="toggleTodoStatus(todo.id, !todo.done)"
     />
 
-    <button class="button" @click="hideCompleted = !hideCompleted">
-        <span class="icon-text">
-            <span class="icon">
-                <!--
-                <i :class="{ hidden: hideCompleted}" class="fas fa-angle-right"></i>
-                <i :class="{ hidden: hideCompleted}" class="fas fa-angle-down"></i>
-                -->
-            </span>
-            <span>Completed</span>
-        </span>
+    <button class="button is-small mt-1 mb-2" @click="hideCompleted = !hideCompleted">
+      <span class="icon">
+        <i 
+          :class="hideCompleted
+            ? 'fas fa-angle-right'
+            : 'fas fa-angle-down'"
+        />
+      </span>
+      <span class="icon-text">
+        <span>Completed</span>
+      </span>
     </button>
 
     <ListItem
-        v-for="todo in closedTodos" 
-        :key="todo.id"
-        :id="todo.id"
-        :text="todo.text"
-        :content="todo.content"
-        :done="todo.done"
-        @status="todo.done = !todo.done"
+      v-for="todo in closedTodos"
+      :key="todo.id"
+      :todo="todo"
+      @status="toggleTodoStatus(todo.id, !todo.done)"
     />
 
-    <div class="field">
-        <div class="control has-icons-left">
-            <input 
-                class="input" 
-                placeholder="Add a new todo" 
-                v-model.trim="todo" 
-                v-on:keyup.enter="addItem"
-            >
-            <span class="icon is-small is-left" @click="addItem">
-                <i class="fas fa-plus"></i>
-            </span>
-        </div>
+    <div id="new-todo" class="field top-pad pb-5 fixed">
+      <div class="control has-icons-left bottom-pad">
+        <input
+          class="input"
+          placeholder="Add a new todo"
+          v-model.trim="newTodo"
+          v-on:keyup.enter="addItem"
+        />
+        <span class="icon clickable is-small is-left" @click="addItem">
+          <i class="fas fa-plus" />
+        </span>
+      </div>
     </div>
+  </div>
 </template>
 
-<style scoped lang="scss">
-.button {
-    height: 1.75em;
-    padding: 1em;
-    font-size: 0.75em;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-}
+<style lang="sass" scoped>
+@import "@/assets/styles/global.sass"
 
-.box {
-    margin-bottom: 0.75em !important;
-}
+.button
+  height: 1.75em
+  font-size: 0.75em
+  border-radius: 3px !important
 
-.icon {
-    pointer-events: all !important;
-}
+#new-todo
+  bottom: 0em
 </style>

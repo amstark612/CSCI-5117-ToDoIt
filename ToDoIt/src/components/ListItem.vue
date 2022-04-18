@@ -1,65 +1,52 @@
-<script setup>
-let props = defineProps({
-    id: Number,
-    text: String,
-    content: String,
-    done: Boolean
-})
-
-const emit = defineEmits(['status'])
-
+<script>
+export default {
+  name: "ListItem",
+  props: {
+    todo: Object,
+  },
+  emits: ["status"],
+};
 </script>
 
 <template>
-    <div class="box truncate">
-        <span class="icon-text" :class="props.done ? 'muted' : ''">
-            <span class="icon" @click="emit('status')">
-                <i v-if="props.done" class="far fa-check-circle"></i>
-                <i v-else class="far fa-circle"></i>
-            </span>
-            <RouterLink :to="{ name: 'todo', params: { id: props.id } }">
-                <span>{{ props.text }}</span>
-            </RouterLink>
-        </span>
-        <span class="caption">{{ props.content }}</span>
-    </div>
+  <div class="box mb-3">
+    <span
+      class="icon-text todo-contents"
+      :class="this.todo.done ? 'muted done' : ''"
+    >
+      <span class="icon clickable" @click="$emit('status')">
+        <i :class="this.todo.done ? 'far fa-check-circle' : 'far fa-circle'" />
+      </span>
+
+      <RouterLink :to="{ name: 'todo', params: { id: this.todo.id } }">
+        <span>{{ this.todo.title }}</span>
+      </RouterLink>
+
+      <span class="caption left-pad">{{ this.todo.content }}</span>
+    </span>
+  </div>
 </template>
 
-<style scoped lang="scss">
-.muted {
-    color: #283618;
-    text-decoration: line-through;
-}
+<style lang="sass" scoped>
+@import "@/assets/styles/global.sass"
 
-.muted a, a:visited {
-    color: inherit;
-}
+.todo-contents
+  display: -webkit-box 
+  -webkit-line-clamp: 1
+  -webkit-box-orient: vertical
+  overflow: hidden
+  // color: $dark-olive
 
-a, a:visited {
-    color: inherit;
-}
+.caption
+  color: $dark-olive
+  font-style: italic
 
-a:hover {
-    color: #FEFAE0;
-}
+.muted, .muted a, .muted a:visited
+    color: $dark-olive
 
-.truncate {
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-}
+a, a:visited
+    color: inherit
 
-.caption {
-    flex: 1 1 auto;
-    padding-left: 5px;
-    color: #283618;
-    font-style: italic;
-
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-}
+a:hover
+    color: $cream
 </style>

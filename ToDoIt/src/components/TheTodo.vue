@@ -1,5 +1,5 @@
 <script>
-import { auth, db } from "@/main";
+import { auth, db } from "@/firebaseConfig";
 import firebase from "firebase/app";
 import BaseMenuItem from "./BaseMenuItem.vue";
 
@@ -8,7 +8,6 @@ export default {
   data() {
     return {
       categories: [],
-      firestoreDocId: null,
       editMode: false,
       showCategories: false,
       todo: null,
@@ -30,19 +29,14 @@ export default {
   },
 
   firestore() {
-    db.collection("categories")
-      .where("user_id", "==", auth.currentUser.uid)
+    db.collection("categories").doc(auth.currentUser.uid)
       .get()
-      .then(result => {
-        result.forEach(data => {
-          this.firestoreDocId = data.id;
-
-          data.data().categories.forEach(category => {
-            this.categories.push(category);
-          });
-        });
-
-        this.categories.sort();
+      .then(doc => {
+        if (doc.exists) {
+          this.categories = doc.data().categories.sort();
+        } else {
+          console.log("this will never happen");
+        }
     });      
 
     return {
@@ -61,7 +55,7 @@ export default {
   methods: {
     deleteCategory(category) {
       db.collection("categories")
-        .doc(this.firestoreDocId)
+        .doc(auth.currentUser.uid)
         .update({
           categories: firebase.firestore.FieldValue.arrayRemove(category.toLowerCase()),
       });
@@ -73,7 +67,7 @@ export default {
       db.collection("todos").doc(this.id).update({category: category});
       this.showCategories = !this.showCategories;
     },
-   
+
     toggleTodoStatus() {
       db.collection("todos").doc(this.id).update({done: !this.todo.done});
     },

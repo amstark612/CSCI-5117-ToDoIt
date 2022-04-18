@@ -1,41 +1,82 @@
-<script setup>
-import { computed } from 'vue'
-import ListItem from '@/components/ListItem.vue'
-import TheTopBar from '@/components/TheTopBar.vue'
+<script>
+import { auth, db } from "@/firebaseConfig";
+import ListItem from "@/components/ListItem.vue";
 
-let props = defineProps({
+export default {
+  name: "TheCompletedList",
+  data() {
+    return {
+      todos: [],
+    }
+  },
+  props: {
     category: String,
-    todos: Array
-})
+  },
+  components: {
+    ListItem,
+  },
 
-let completedTodos = computed(() => {
-    return props.todos.filter((todo) => todo.done)
-})
+  computed: {
+    closedTodos() {
+      return this.todos.filter((todo) => todo.done);
+    },
+  },
+
+  firestore() {
+    if (this.category) {
+      return {
+        todos: db.collection("todos")
+                .where("user_id", "==", auth.currentUser.uid)
+                .where("category", "==", this.category)
+                .orderBy("created_at"),
+      }
+    } else {
+      return {
+        todos: db.collection("todos")
+                .where("user_id", "==", auth.currentUser.uid)
+                .orderBy("created_at"),
+
+      }
+    }
+  },
+
+  watch: {
+    category() {
+      db.collection("todos")
+        .where("user_id", "==", auth.currentUser.uid)
+        .where("category", "==", this.category)
+        .orderBy("created_at")
+        .get()
+        .then(todos => {
+          this.todos = [];
+          todos.forEach(todo => {
+            this.todos.push(todo.data());
+          });
+        });
+    },
+  },
+
+  methods: {
+    toggleTodoStatus(id, status) {
+      db.collection("todos").doc(id).update({done: status});
+    },
+  },
+};
 </script>
 
 <template>
-    <TheTopBar />
+  <div id="list-container">
+    <header class="capitalize">Completed {{ this.category }} Todos</header>
 
-    <!-- CTN-TODO: titleize -->
-    <header>Completed {{ props.category }} Todos</header>
     <ListItem
-        v-for="todo in completedTodos"
-        :key="todo.id"
-        :id="todo.id"
-        :text="todo.text"
-        :content="todo.content"
-        :done="todo.done"
+      v-for="todo in closedTodos"
+      :key="todo.id"
+      :todo="todo"
+      @status="toggleTodoStatus(todo.id, !todo.done)"
     />
+  </div>
 </template>
 
-<style scoped lang="scss">
-// @import '@/assets/stylesheets/_variables.sass';
-.box {
-    margin-bottom: 0.75em !important;
-    color: $dark-olive;
-}
-
-.icon {
-    pointer-events: all !important;
-}
+<style lang="sass" scoped>
+@import "@/assets/styles/global.sass"
 </style>
