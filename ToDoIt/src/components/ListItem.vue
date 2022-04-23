@@ -5,10 +5,6 @@ export default {
     todo: Object,
   },
   emits: ["status"],
-  mounted() {
-    console.log(this.todo);
-    console.log(this.todo.id);
-  }
 };
 </script>
 

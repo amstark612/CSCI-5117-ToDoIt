@@ -14,6 +14,9 @@ export default {
     TheTopBar,
   },
 
+  mounted() {
+    this.category = this.$route.params.category || "";
+  },
   watch: {
     $route() {
       this.category = this.$route.params.category || "";

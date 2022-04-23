@@ -78,7 +78,6 @@ export default {
             todos.forEach(todo => {
               let todoObj = {...todo.data()};
               todoObj.id = todo.id;
-              console.log(todoObj);
               this.todos.push(todoObj);
             });
         });
@@ -89,7 +88,6 @@ export default {
             todos.forEach(todo => {
               let todoObj = {...todo.data()};
               todoObj.id = todo.id;
-              console.log(todoObj);
               this.todos.push(todoObj);
             });
         });
