@@ -5,6 +5,10 @@ export default {
     todo: Object,
   },
   emits: ["status"],
+  mounted() {
+    console.log(this.todo);
+    console.log(this.todo.id);
+  }
 };
 </script>
 
@@ -35,18 +39,17 @@ export default {
   -webkit-line-clamp: 1
   -webkit-box-orient: vertical
   overflow: hidden
-  // color: $dark-olive
 
 .caption
   color: $dark-olive
   font-style: italic
 
 .muted, .muted a, .muted a:visited
-    color: $dark-olive
+  color: $dark-olive
 
 a, a:visited
-    color: inherit
+  color: inherit
 
 a:hover
-    color: $cream
+  color: $cream
 </style>

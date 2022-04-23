@@ -8,6 +8,7 @@ export default {
   data() {
     return {
       todos: [],
+      todosKey: 0,
       newTodo: null,
       hideCompleted: false,
     };
@@ -54,22 +55,46 @@ export default {
   },
 
   watch: {
+    todosKey() {
+      this.fetchData();
+    },
     category() {
-      db.collection("todos")
-        .where("user_id", "==", auth.currentUser.uid)
-        .where("category", "==", this.category)
-        .orderBy("created_at")
-        .get()
-        .then(todos => {
-          this.todos = [];
-          todos.forEach(todo => {
-            this.todos.push(todo.data());
-          });
-        });
+      this.fetchData();
     },
   },
 
   methods: {
+    fetchData() {
+      console.log('fetching data');
+      let query = db.collection("todos")
+          .where("user_id", "==", auth.currentUser.uid)
+          .orderBy("created_at");
+
+      if (this.category.length) {
+        query.where("category", "==", this.category)
+          .get()
+          .then(todos => {
+            this.todos = [];
+            todos.forEach(todo => {
+              let todoObj = {...todo.data()};
+              todoObj.id = todo.id;
+              console.log(todoObj);
+              this.todos.push(todoObj);
+            });
+        });
+      } else {
+        query.get()
+          .then(todos => {
+            this.todos = [];
+            todos.forEach(todo => {
+              let todoObj = {...todo.data()};
+              todoObj.id = todo.id;
+              console.log(todoObj);
+              this.todos.push(todoObj);
+            });
+        });
+      }
+    },
     // new-todo input field has fixed positioning
     // thus needs to be manually sized to fit width of parent container
     adjustInputWidth() {
@@ -87,6 +112,7 @@ export default {
           created_at: Date.now(),
         }).then(ref => {
           console.log(ref.id);
+          this.todosKey += 1;
         });
 
         this.newTodo = null;
@@ -97,6 +123,7 @@ export default {
 
     toggleTodoStatus(id, status) {
       db.collection("todos").doc(id).update({done: status});
+      this.todosKey += 1;
     },
   },
 };
